@@ -34,9 +34,9 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * test
+     * @test
      */
-    public function wptStartTestWorksProperly() {
+    public function wptTestRequestWorksProperly() {
         /**
          * Given an url
          * request a test from WebPageTest
@@ -44,10 +44,10 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          */
 
         $url = 'https://www.facebook.com';
-
-        $wptClassTest = new SpeedPerformance();
-
-        $this->assertEquals(200,$wptClassTest->wptSendRequest($url));
+        $wptConfigRequestTest = new SpeedPerformance\Settings();
+        $wptConfigRequestTest->getSettings("./config.json");
+        $wptRequestTest = new SpeedPerformance\SpeedPerformance();
+        $this->assertInternalType('array',$wptRequestTest->wptSendRequest($url,$wptConfigRequestTest->wptKey));
     }
 
     /**

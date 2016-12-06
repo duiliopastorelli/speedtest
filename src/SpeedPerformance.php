@@ -7,20 +7,20 @@
 namespace duiliopastorelli\SpeedPerformance;
 
 use Exception;
-class MyException extends Exception { }
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class SpeedPerformance
 {
-
     function __construct(){
 
         $this->tester = 'wpt';
         $this->format = 'json';
     }
 
+    public function wptSendRequest($url, $key, $email=null){
 
-
-    public function wptSendRequest($url, $email=null, $key){
+        $logger = new Logger('wptRequest');
 
         $data = array(
             'k'   => $key,
@@ -40,18 +40,20 @@ class SpeedPerformance
 
         $context  = stream_context_create($options);
         try {
-            $result = file_get_contents('http://www.webpagetest.org/runtest.php', false, $context);
+            $response = file_get_contents('http://www.webpagetest.org/runtest.php', false, $context);
+            $wptRequestJson = json_decode($response, true);
 
-            if ($result === FALSE) {
+            if ($response === FALSE) {
                 throw new Exception('Error in the api consumption');
             }
 
         } catch (Exception $e){
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
+            $logger->addError($e->getMessage());
         };
 
-        var_dump($result);
+        var_dump($wptRequestJson['data']['jsonUrl']);
 
-        return $result;
+        return $wptRequestJson;
     }
 }
