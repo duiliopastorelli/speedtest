@@ -13,7 +13,7 @@ use duiliopastorelli\SpeedPerformance as SpeedPerformance;
 class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @test
+     * test
      */
     public function wptConfigLoadedOnceProperly() {
         /**
@@ -23,18 +23,18 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * return the respective objects and associated arrays
          */
 
-        $wptConfigTest = new SpeedPerformance\Settings();
-        $this->assertFalse($wptConfigTest->wptIsProperlySet);
-        $wptConfigTest->getSettings('mocks/testConfig.json');
-        $this->assertTrue($wptConfigTest->wptIsProperlySet);
+        $wptConfig = new SpeedPerformance\Settings();
+        $this->assertFalse($wptConfig->wptIsProperlySet);
+        $wptConfig->getSettings('mocks/testConfig.json');
+        $this->assertTrue($wptConfig->wptIsProperlySet);
 
-        $wptConfigTestWrong = new SpeedPerformance\Settings();
-        $wptConfigTestWrong->getSettings('mocks/testConfigBad.json');
-        $this->assertFalse($wptConfigTestWrong->wptIsProperlySet);
+        $wptConfigWrong = new SpeedPerformance\Settings();
+        $wptConfigWrong->getSettings('mocks/testConfigBad.json');
+        $this->assertFalse($wptConfigWrong->wptIsProperlySet);
     }
 
     /**
-     * @test
+     * test
      */
     public function wptTestRequestWorksProperly() {
         /**
@@ -44,46 +44,27 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          */
 
         $url = 'https://www.facebook.com';
-        $wptConfigRequestTest = new SpeedPerformance\Settings();
-        $wptConfigRequestTest->getSettings("./config.json");
-        $wptRequestTest = new SpeedPerformance\SpeedPerformance();
-        $this->assertEquals('Ok',$wptRequestTest->wptSendRequest($url,$wptConfigRequestTest->wptKey)['statusText']);
+        $wptConfigRequest = new SpeedPerformance\Settings();
+        $wptConfigRequest->getSettings("./config.json");
+        $wptRequest = new SpeedPerformance\SpeedPerformance();
+        $this->assertEquals('Ok',$wptRequest->wptSendRequest($url,$wptConfigRequest->wptKey)['statusText']);
     }
 
     /**
      * test
      */
-    public function footestName(){
+    public function getWptTestData(){
         /**
          * Given an test result url
          * retrieve the JSON and check --> statusText: "Test Complete"
          * if false wait and retrieve the JSON again for max 10 times.
          */
 
-        $this->assertEquals(true,false);
+        $url = 'https://www.facebook.com';
+        $wptConfig = new SpeedPerformance\Settings();
+        $wptConfig->getSettings('./config.json');
+        $wptData = new SpeedPerformance\SpeedPerformance();
+        $request = $wptData->wptSendRequest($url,$wptConfig->wptKey);
+        $this->assertInternalType('array',$wptData->getWptTestData($request));
     }
-
-
-
-
-    private function wptTests() {
-
-        $tO = array(
-            'key' => 'A.204365e99f80e5e48161300e10d16962',
-            'url' => 'http://www.facebook.com',
-            'email' => 'mezgec.danilo@gmail.com'
-        );
-
-        $speedTest = new SpeedPerformance('foo');
-
-        /**
-         * As an authorized user
-         * given an url and an feedback email
-         * retrieve a json response with status code of 200 from WPT
-         * return the test url or catch an exception
-         */
-
-        $returnedJson = $speedTest->wptSendRequest($tO['url'], $tO['email'], $tO['key']);
-    }
-
 }

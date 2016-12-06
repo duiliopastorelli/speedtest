@@ -52,7 +52,25 @@ class SpeedPerformance
             }
         } catch (Exception $e){
             $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
-            $logger->addError($e->getMessage());
+            $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
+        };
+    }
+
+    public function getWptTestData($request){
+
+        $logger = new Logger('wptGetTestData');
+
+        try {
+            if (isset($request) && gettype($request) == 'array'){
+                $testData = file_get_contents($request['data']['jsonUrl'], false, $context);
+//                return array();
+            } else {
+                throw new Exception('getWptTestData needs an array that comes from the wptSendRequest. ' .
+                gettype($request) . ' given.');
+            }
+        } catch (Exception $e){
+            $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
+            $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
         };
     }
 }
