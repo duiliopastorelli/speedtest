@@ -47,7 +47,7 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
         $wptConfigRequestTest = new SpeedPerformance\Settings();
         $wptConfigRequestTest->getSettings("./config.json");
         $wptRequestTest = new SpeedPerformance\SpeedPerformance();
-        $this->assertInternalType('array',$wptRequestTest->wptSendRequest($url,$wptConfigRequestTest->wptKey));
+        $this->assertEquals('Ok',$wptRequestTest->wptSendRequest($url,$wptConfigRequestTest->wptKey)['statusText']);
     }
 
     /**

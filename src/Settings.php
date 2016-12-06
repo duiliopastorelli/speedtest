@@ -41,7 +41,7 @@ class Settings
                 if (isset($wptConfig['key']) && is_string($wptConfig['key'])){
                     $this->wptKey = $wptConfig['key'];
                 } else {
-                    throw new Exception('The key for Web Page Test must be configured and be a string!');
+                    throw new Exception('The key for Web Page Test must be configured and be a string! It is: ' . gettype($wptConfig['key']));
                 }
 
                 if (isset($wptConfig['email'])){

@@ -44,16 +44,15 @@ class SpeedPerformance
             $wptRequestJson = json_decode($response, true);
 
             if ($response === FALSE) {
-                throw new Exception('Error in the api consumption');
+                throw new Exception('Error in the api consumption: response is emplty.');
+            } elseif ($wptRequestJson['statusCode'] != 200){
+                throw new Exception('Error in the api consumption, the server didn\'t respond with a 200 but with: ' . $wptRequestJson['statusCode']);
+            } else {
+                return $wptRequestJson;
             }
-
         } catch (Exception $e){
             $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
             $logger->addError($e->getMessage());
         };
-
-        var_dump($wptRequestJson['data']['jsonUrl']);
-
-        return $wptRequestJson;
     }
 }
