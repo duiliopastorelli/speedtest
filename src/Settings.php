@@ -28,7 +28,13 @@ class Settings
 
         //Read the configuration file
         if (!$this->wptIsAlreadySet){
-            $this->rawConfig = file_get_contents($configFilePath);
+            try {
+                $this->rawConfig = file_get_contents($configFilePath);
+            } catch (Exception $e){
+                $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
+                $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
+            }
+
         }
 
         //Parse the file and obtain the JSON objects
@@ -52,7 +58,7 @@ class Settings
             }
         } catch (Exception $e){
             $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
-            $logger->addError($e->getMessage());
+            $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
         }
 
         return $configJson;
