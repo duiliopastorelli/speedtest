@@ -13,7 +13,7 @@ use duiliopastorelli\SpeedPerformance as SpeedPerformance;
 class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * test
+     * @test
      */
     public function wptConfigLoadedOnceProperly() {
         /**
@@ -34,20 +34,51 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function wptTestRequestWorksProperly() {
         /**
          * Given an url
          * request a test from WebPageTest
          * return the test result url
+         *
+         * Note: this test requires a working internet connection and a working config file (for the key)
          */
 
-        $url = 'https://www.facebook.com';
-        $wptConfigRequest = new SpeedPerformance\Settings();
-        $wptConfigRequest->getSettings("./config.json");
-        $wptRequest = new SpeedPerformance\SpeedPerformance();
-        $this->assertEquals('Ok',$wptRequest->wptSendRequest($url,$wptConfigRequest->wptKey)['statusText']);
+        $wptRequest = new SpeedPerformance\SpeedPerformance('./config.json');
+        $wptRequest->settings->wptUrl = "https://www.facebook.com";
+        $this->assertEquals('Ok',$wptRequest->wptSendRequest()['statusText']);
+    }
+
+    /**
+     * test
+     */
+    public function checkResponseStatus(){
+        /**
+         * Given a request response
+         * return the statusCode and the satusText;
+         */
+
+        $jsonFile100 = json_decode(file_get_contents("./mocks/incompleteTest.json"), true);
+        $this->assertEquals(100,$jsonFile100['statusCode']);
+        $this->assertEquals("Test Started 17 seconds ago",$jsonFile100["statusText"]);
+
+        $jsonFile200 = json_decode(file_get_contents("./mocks/completeTest.json"), true);
+        $this->assertEquals(200,$jsonFile200['statusCode']);
+        $this->assertEquals("Test Complete",$jsonFile200["statusText"]);
+    }
+
+    /**
+     * @test
+     */
+    public function wptQueueManagement(){
+        /**
+         * Send the first request
+         * return the result or await and try again if the result it's not ready
+         */
+
+        $wptRequest = new SpeedPerformance\SpeedPerformance('./config.json');
+        $wptRequest->wptQueueManagement();
     }
 
     /**
@@ -60,11 +91,13 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * if false wait and retrieve the JSON again for max 10 times.
          */
 
+
+
         $url = 'https://www.facebook.com';
         $wptConfig = new SpeedPerformance\Settings();
         $wptConfig->getSettings('./config.json');
         $wptData = new SpeedPerformance\SpeedPerformance();
-        $request = $wptData->wptSendRequest($url,$wptConfig->wptKey);
+        $request = $wptData->wptSendRequest();
         $this->assertInternalType('array',$wptData->getWptTestData($request));
     }
 }

@@ -16,10 +16,16 @@ $wptConfigTest->getSettings('PATH');
 
 Its basic structure looks like:
 
+./config.json
+
 ```json
 {
   "wpt":{
-    "key": "YourKeyHere"
+    "key": "YourKeyHere",
+    "url":{
+      "0": "https://example.com",
+      "1": "https://example1.com"
+    }
   }
 }
 ```
@@ -28,6 +34,12 @@ Its basic structure looks like:
 - "email": "string"
 
 # Develop
+
+## Test suite
+
+For run a test use the command
+
+```vendor/bin/phpunit tests/[FILENAME]```
 
 # Data
 ##WebPageTest

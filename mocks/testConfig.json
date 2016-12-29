@@ -1,6 +1,10 @@
 {
   "wpt":{
     "key": "proper key",
-    "email": "proper email"
+    "email": "proper email",
+    "url":{
+      "0": "https://www.facebook.com",
+      "1": "https://www.baloo.com"
+    }
   }
 }

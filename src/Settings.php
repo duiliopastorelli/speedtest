@@ -20,6 +20,7 @@ class Settings
         $this->rawConfig = null;
         $this->wptKey = null;
         $this->wptEmail = null;
+        $this->wptUrl = null;
     }
 
     public function getSettings($configFilePath) {
@@ -52,6 +53,14 @@ class Settings
 
                 if (isset($wptConfig['email'])){
                     $this->wptEmail = $wptConfig['email'];
+                } else {
+                    $this->wptEmail = '';
+                }
+
+                if(isset($wptConfig['url'])){
+                    $this->wptUrl = $wptConfig['url'];
+                } else {
+                    throw new Exception('The url for the Web Page Test must be declared into the config file!');
                 }
 
                 $this->wptIsProperlySet = true;
