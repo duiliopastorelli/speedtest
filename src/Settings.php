@@ -28,22 +28,17 @@ class Settings
         $logger = new Logger('settings');
 
         //Read the configuration file
-        if (!$this->wptIsAlreadySet){
-            try {
-                $this->rawConfig = file_get_contents($configFilePath);
-            } catch (Exception $e){
-                $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
-                $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
-            }
-
-        }
-
-        //Parse the file and obtain the JSON objects
-        $configJson = json_decode($this->rawConfig, true);
-
-        $wptConfig = $configJson['wpt'];
 
         try {
+            if (!$this->wptIsAlreadySet) {
+                $this->rawConfig = file_get_contents($configFilePath);
+            }
+
+            //Parse the file and obtain the JSON objects
+            $configJson = json_decode($this->rawConfig, true);
+
+            $wptConfig = $configJson['wpt'];
+
             if(isset($wptConfig)){
                 if (isset($wptConfig['key']) && is_string($wptConfig['key'])){
                     $this->wptKey = $wptConfig['key'];
