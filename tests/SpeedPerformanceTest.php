@@ -25,11 +25,11 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
 
         $wptConfig = new SpeedPerformance\Settings();
         $this->assertFalse($wptConfig->wptIsProperlySet);
-        $wptConfig->getSettings('mocks/testConfig.json');
+        $wptConfig->getSettings("test");
         $this->assertTrue($wptConfig->wptIsProperlySet);
 
         $wptConfigWrong = new SpeedPerformance\Settings();
-        $wptConfigWrong->getSettings('mocks/testConfigBad.json');
+        $wptConfigWrong->getSettings("testBadConfig");
         $this->assertFalse($wptConfigWrong->wptIsProperlySet);
     }
 
@@ -45,13 +45,13 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * Note: this test requires a working internet connection and a working config file (for the key)
          */
 
-        $wptRequest = new SpeedPerformance\SpeedPerformance('./config.json');
+        $wptRequest = new SpeedPerformance\SpeedPerformance();
         $wptRequest->settings->wptUrl = "https://www.facebook.com";
         $this->assertEquals('Ok',$wptRequest->wptSendRequest()['statusText']);
     }
 
     /**
-     * test
+     * @test
      */
     public function checkResponseStatus(){
         /**
@@ -77,7 +77,7 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * return the result or await and try again if the result it's not ready
          */
 
-        $wptRequest = new SpeedPerformance\SpeedPerformance('./config.json');
+        $wptRequest = new SpeedPerformance\SpeedPerformance();
         $wptRequest->wptQueueManagement();
     }
 

@@ -23,7 +23,7 @@ class Settings
         $this->wptUrl = null;
     }
 
-    public function getSettings($configFilePath) {
+    public function getSettings($appStatus=null) {
 
         $logger = new Logger('settings');
 
@@ -31,6 +31,24 @@ class Settings
 
         try {
             if (!$this->wptIsAlreadySet) {
+                switch ($appStatus){
+                    case "dist":
+                        $configFilePath = "./config.json";
+                        break;
+
+                    case "test":
+                        $configFilePath = "./mocks/testConfig.json";
+                        break;
+
+                    case "testBadConfig":
+                        $configFilePath = "./mocks/testConfigBad.json";
+                        break;
+
+                    default:
+                        $configFilePath = "./config.json";
+                        break;
+                }
+
                 $this->rawConfig = file_get_contents($configFilePath);
             }
 

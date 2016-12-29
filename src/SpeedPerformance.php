@@ -12,10 +12,10 @@ use Monolog\Handler\StreamHandler;
 
 class SpeedPerformance
 {
-    function __construct($configPath){
+    function __construct($appStatus=null){
 
         $settings = new Settings();
-        $settings->getSettings($configPath);
+        $settings->getSettings($appStatus);
 
         $this->tester = 'wpt';
         $this->format = 'json';
