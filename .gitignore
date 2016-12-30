@@ -1,4 +1,4 @@
 .idea
 vendor
 config.json
-src/*.log
+/src/speedPerformance.log
