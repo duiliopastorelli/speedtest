@@ -33,6 +33,16 @@ Its basic structure looks like:
 ###Optional values for WPT
 - "email": "string"
 
+# Class usage
+```php
+$foo = new SpeedPerformance([$appStatus]);
+```
+
+$appStatus is optional and can have the following values:
+- "dist" -> load the normal config.json file (same as empty)
+- "test" -> load the mocks/testConfig.json file
+- "testBadConfig" -> load the mocks/testConfigBad.json file
+
 # Develop
 
 ## Test suite
