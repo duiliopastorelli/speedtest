@@ -23,18 +23,18 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * return the respective objects and associated arrays
          */
 
-        $wptConfig = new SpeedPerformance\Settings();
-        $this->assertFalse($wptConfig->wptIsProperlySet);
-        $wptConfig->getSettings("test");
-        $this->assertTrue($wptConfig->wptIsProperlySet);
+        $this->assertEquals(null, SpeedPerformance\Settings::getWptIsProperlySet());
 
-        $wptConfigWrong = new SpeedPerformance\Settings();
-        $wptConfigWrong->getSettings("testBadConfig");
-        $this->assertFalse($wptConfigWrong->wptIsProperlySet);
+        SpeedPerformance\Settings::getSettings("test");
+        $this->assertTrue(SpeedPerformance\Settings::getWptIsProperlySet());
+
+        SpeedPerformance\Settings::resetConfigStatus();
+        SpeedPerformance\Settings::getSettings("testBadConfig");
+        $this->assertFalse(SpeedPerformance\Settings::getWptIsProperlySet());
     }
 
     /**
-     * @test
+     * test
      */
     public function wptTestRequestWorksProperly() {
         /**
@@ -51,7 +51,7 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function checkResponseStatus(){
         /**
@@ -69,7 +69,7 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function wptQueueManagement(){
         /**
@@ -91,9 +91,6 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * if false wait and retrieve the JSON again for max 10 times.
          */
 
-
-
-        $url = 'https://www.facebook.com';
         $wptConfig = new SpeedPerformance\Settings();
         $wptConfig->getSettings('./config.json');
         $wptData = new SpeedPerformance\SpeedPerformance();
