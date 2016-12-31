@@ -16,7 +16,7 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function wptConfigLoadedOnceProperly() {
+    public function wptIsProperlySetWorksProperly() {
         /**
          * Given a configuration file
          * check if it's already loaded in memory
@@ -31,8 +31,9 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($settingInstance2->getWptIsProperlySet());
     }
 
+
     /**
-     * @test
+     * test
      */
     public function wptTestRequestWorksProperly() {
         /**
@@ -47,10 +48,11 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Ok',$wptRequest->wptSendRequest($wptRequest->settings ,'https://www.facebook.com')['statusText']);
     }
 
+
     /**
      * @test
      */
-    public function checkResponseStatus(){
+    public function checkResponseStatusWorksProperly(){
         /**
          * Given a request response
          * return the statusCode and the satusText;
@@ -65,23 +67,26 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("Test Complete",$jsonFile200["statusText"]);
     }
 
+
     /**
      * test
      */
-    public function wptQueueManagement(){
+    public function wptQueueManagementWorksProperly(){
         /**
-         * Send the first request
-         * return the result or await and try again if the result it's not ready
+         * Given a setting object with an array of urls
+         * Run at least on test for every url
+         * Retry until get !=100
          */
 
         $wptRequest = new SpeedPerformance\SpeedPerformance();
         $wptRequest->wptQueueManagement();
     }
 
+
     /**
      * test
      */
-    public function getWptTestData(){
+    public function getWptTestDataWorksProperly(){
         /**
          * Given an test result url
          * retrieve the JSON and check --> statusText: "Test Complete"

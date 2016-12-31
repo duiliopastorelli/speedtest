@@ -20,9 +20,10 @@ class SpeedPerformance
         $this->settings = $settings;
     }
 
-    public static function runTests(){
-        //Instantiate self
-        //Run the queue system
+    public static function runTests($appStatus){
+        $tests = new SpeedPerformance($appStatus);
+
+        //todo Run the queue system
     }
 
 
@@ -42,7 +43,6 @@ class SpeedPerformance
     /**
      * @param $jsonResponse
      * @return array
-     *
      * Check the status code and the status message of a JSON response and returns an array just with these data.
      */
     public function checkResponseStatus($jsonResponse){
@@ -73,6 +73,8 @@ class SpeedPerformance
     public function wptQueueManagement(){
 
         $logger = new Logger('wptGetTestData');
+
+
         $urlStatus = array();
 
         foreach ($this->settings->wptUrl as $url){

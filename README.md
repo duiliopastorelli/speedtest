@@ -7,16 +7,9 @@ Webpage speed test runner
 ##Configuration
 SpeedPerformance needs a configuration file for work properly.
 
-This file must be a JSON file, could be stored everywhere and called with:
-
-```
-$wptConfigTest = new SpeedPerformance\Settings()
-$wptConfigTest->getSettings('PATH');
-```
+This file must be a JSON fileand must be stored in /config.json
 
 Its basic structure looks like:
-
-./config.json
 
 ```json
 {
@@ -35,7 +28,7 @@ Its basic structure looks like:
 
 # Class usage
 ```php
-$foo = new SpeedPerformance([$appStatus]);
+SpeedPerformance\SpeedPerformance::runTests([$appStatus]);
 ```
 
 $appStatus is optional and can have the following values:
