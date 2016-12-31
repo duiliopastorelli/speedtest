@@ -14,56 +14,28 @@ class SpeedPerformance
 {
     function __construct($appStatus=null){
 
-        $settings = new Settings();
-        $settings->getSettings($appStatus);
+        $settings = Settings::getSettings($appStatus);
 
         $this->tester = 'wpt';
-        $this->format = 'json';
         $this->settings = $settings;
     }
 
+    public static function runTests(){
+        //Instantiate self
+        //Run the queue system
+    }
+
+
     /**
-     * @return mixed
-     *
-     * Send a test request to WPT and return a JSON with the server response
+     * @param $settings
+     * @param $url
+     * @return mixed|null
+     * Send the single request for a single test. It is used by the queue management.
      */
-    public function wptSendRequest(){
+    public function wptSendRequest($settings, $url){
+        $request = new SpeedPerformanceItem($settings, $url);
 
-        $logger = new Logger('wptRequest');
-
-        $data = array(
-            'k'         => $this->settings->wptKey,
-            'private'   => 1,
-            'f'         => $this->format,
-            'notify'    => $this->settings->wptEmail,
-            'url'       => $this->settings->wptUrl
-        );
-
-        $options = array(
-            'http' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($data)
-            )
-        );
-
-        $context  = stream_context_create($options);
-
-        try {
-            $response = file_get_contents('http://www.webpagetest.org/runtest.php', false, $context);
-            $wptRequestJson = json_decode($response, true);
-
-            if ($response === FALSE) {
-                throw new Exception('Error in the api consumption: response is empty.');
-            } elseif ($wptRequestJson['statusCode'] != 200){
-                throw new Exception('Error in the api consumption, the server didn\'t respond with a 200 but with: ' . $wptRequestJson['statusCode']);
-            }
-        } catch (Exception $e){
-            $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
-            $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
-        };
-
-        return $wptRequestJson;
+        return $request->wptGetTest();
     }
 
 
@@ -142,34 +114,5 @@ class SpeedPerformance
         };
 
         return $response;
-    }
-
-    public function getWptTestData($request){
-
-        $logger = new Logger('wptGetTestData');
-
-        try {
-            if (isset($request) && gettype($request) == 'array'){
-                $testData = file_get_contents($request['data']['jsonUrl'], false, $context);
-//                return array();
-            } else {
-                throw new Exception('getWptTestData needs an array that comes from the wptSendRequest. ' .
-                gettype($request) . ' given.');
-            }
-        } catch (Exception $e){
-            $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
-            $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
-        };
-    }
-
-
-    public function runTest(){
-
-        try {
-            $settings = new Settings();
-            $this->wptSendRequest();
-        } catch (Exception $e){
-
-        }
     }
 }

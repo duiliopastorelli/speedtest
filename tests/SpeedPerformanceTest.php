@@ -7,6 +7,7 @@
 require 'vendor/autoload.php';
 require 'src/SpeedPerformance.php';
 require 'src/Settings.php';
+require 'src/SpeedPerformanceitem.php';
 
 use duiliopastorelli\SpeedPerformance as SpeedPerformance;
 
@@ -23,18 +24,15 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          * return the respective objects and associated arrays
          */
 
-        $this->assertEquals(null, SpeedPerformance\Settings::getWptIsProperlySet());
+        $settingInstance1 = SpeedPerformance\Settings::getSettings('test');
+        $this->assertTrue($settingInstance1->getWptIsProperlySet());
 
-        SpeedPerformance\Settings::getSettings("test");
-        $this->assertTrue(SpeedPerformance\Settings::getWptIsProperlySet());
-
-        SpeedPerformance\Settings::resetConfigStatus();
-        SpeedPerformance\Settings::getSettings("testBadConfig");
-        $this->assertFalse(SpeedPerformance\Settings::getWptIsProperlySet());
+        $settingInstance2 = SpeedPerformance\Settings::getSettings('testBadConfig');
+        $this->assertFalse($settingInstance2->getWptIsProperlySet());
     }
 
     /**
-     * test
+     * @test
      */
     public function wptTestRequestWorksProperly() {
         /**
@@ -46,12 +44,11 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
          */
 
         $wptRequest = new SpeedPerformance\SpeedPerformance();
-        $wptRequest->settings->wptUrl = "https://www.facebook.com";
-        $this->assertEquals('Ok',$wptRequest->wptSendRequest()['statusText']);
+        $this->assertEquals('Ok',$wptRequest->wptSendRequest($wptRequest->settings ,'https://www.facebook.com')['statusText']);
     }
 
     /**
-     * test
+     * @test
      */
     public function checkResponseStatus(){
         /**

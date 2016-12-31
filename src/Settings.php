@@ -12,43 +12,23 @@ use Monolog\Handler\StreamHandler;
 
 class Settings
 {
-    static private $wptIsAlreadySet = null;
-    static private $wptIsProperlySet = null;
-    static private $rawConfig = null;
-    static private $wptKey = null;
-    static private $wptEmail = null;
-    static private $wptUrl = null;
+    static private $settingsInstantiated = 0;
+    private $wptIsProperlySet = null;
+    private $rawConfig = null;
+    private $wptKey = null;
+    private $wptEmail = null;
+    private $wptUrl = null;
 
 
-    public function __construct()
+    public function __construct($appStatus)
     {
-        self::$wptIsAlreadySet = false;
-        self::$wptIsProperlySet = false;
-        self::$rawConfig = null;
-        self::$wptKey = null;
-        self::$wptEmail = null;
-        self::$wptUrl = null;
-    }
 
-
-    public static function resetConfigStatus(){
-        self::$wptIsAlreadySet = false;
-        self::$wptIsProperlySet = false;
-    }
-
-    /**
-     * @return bool|null
-     * Check if the configuration is properly set for the minimum WPT requirements
-     */
-    public static function getWptIsProperlySet(){
-
-        return self::$wptIsProperlySet;
     }
 
 
     /**
      * @param null $appStatus
-     * @return mixed
+     * @return Settings
      * Return the settings needed for WPT
      */
     public static function getSettings($appStatus=null) {
@@ -58,61 +38,84 @@ class Settings
         //Read the configuration file
 
         try {
-            if (!self::$wptIsAlreadySet) {
-                switch ($appStatus){
-                    case "dist":
-                        $configFilePath = "./config.json";
-                        break;
+            $settingsLoaded = new Settings($appStatus);
 
-                    case "test":
-                        $configFilePath = "./mocks/testConfig.json";
-                        break;
+            switch ($appStatus){
+                case "dist":
+                    $configFilePath = "./config.json";
+                    break;
 
-                    case "testBadConfig":
-                        $configFilePath = "./mocks/testConfigBad.json";
-                        break;
+                case "test":
+                    $configFilePath = "./mocks/testConfig.json";
+                    break;
 
-                    default:
-                        $configFilePath = "./config.json";
-                        break;
-                }
+                case "testBadConfig":
+                    $configFilePath = "./mocks/testConfigBad.json";
+                    break;
 
-                self::$rawConfig = file_get_contents($configFilePath);
+                default:
+                    $configFilePath = "./config.json";
+                    break;
             }
 
+            $settingsLoaded->rawConfig = file_get_contents($configFilePath);
+
             //Parse the file and obtain the JSON objects
-            $configJson = json_decode(self::$rawConfig, true);
+            $configJson = json_decode($settingsLoaded->rawConfig, true);
 
             $wptConfig = $configJson['wpt'];
 
             if(isset($wptConfig)){
                 if (isset($wptConfig['key']) && is_string($wptConfig['key'])){
-                    self::$wptKey = $wptConfig['key'];
+                    $settingsLoaded->wptKey = $wptConfig['key'];
                 } else {
+                    $settingsLoaded->wptIsProperlySet = false;
+
                     throw new Exception('The key for Web Page Test must be configured and be a string! It is: ' . gettype($wptConfig['key']));
                 }
 
                 if (isset($wptConfig['email'])){
-                    self::$wptEmail = $wptConfig['email'];
+                    $settingsLoaded->wptEmail = $wptConfig['email'];
                 } else {
-                    self::$wptEmail = '';
+                    $settingsLoaded->wptEmail = '';
                 }
 
                 if(isset($wptConfig['url'])){
-                    self::$wptUrl = $wptConfig['url'];
+                    $settingsLoaded->wptUrl = $wptConfig['url'];
                 } else {
+                    $settingsLoaded->wptIsProperlySet = false;
+
                     throw new Exception('The url for the Web Page Test must be declared into the config file!');
                 }
 
-                self::$wptIsProperlySet = true;
-            } else {
-                self::$wptIsProperlySet = false;
+                $settingsLoaded->wptIsProperlySet = true;
+                self::$settingsInstantiated ++;
             }
         } catch (Exception $e){
             $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
             $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
         }
 
-        return $configJson;
+        return $settingsLoaded;
+    }
+
+
+    public function getWptIsProperlySet(){
+        return $this->wptIsProperlySet;
+    }
+
+
+    public function getWptKey(){
+        return $this->wptKey;
+    }
+
+
+    public function getWptEmail(){
+        return $this->wptEmail;
+    }
+
+
+    public function getWptUrl(){
+        return $this->wptUrl;
     }
 }
