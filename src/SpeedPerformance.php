@@ -20,6 +20,7 @@ class SpeedPerformance
         $this->settings = $settings;
     }
 
+
     public static function runTests($appStatus){
         $tests = new SpeedPerformance($appStatus);
 
@@ -47,11 +48,11 @@ class SpeedPerformance
      */
     public function checkResponseStatus($jsonResponse){
 
-        $logger = new Logger('wptCheckResponseStatus');
-        $code = null;
-        $status = null;
-
         try {
+            $logger = new Logger('wptCheckResponseStatus');
+            $code = null;
+            $status = null;
+
             if(!isset($jsonResponse['statusCode'])){
                 throw new Exception('Error in getting the status code from the server response: ' . $jsonResponse['statusCode']);
             } else {
@@ -60,6 +61,8 @@ class SpeedPerformance
 
             if(!isset($jsonResponse['statusText'])){
                 throw new Exception('Error in getting the status message from the server response: ' . $jsonResponse['statusText']);
+            } else {
+                $status = $jsonResponse['statusText'];
             }
         } catch (Exception $e){
             $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
@@ -71,50 +74,57 @@ class SpeedPerformance
 
 
     public function wptQueueManagement(){
-
-        $logger = new Logger('wptGetTestData');
-
-
-        $urlStatus = array();
-
-        foreach ($this->settings->wptUrl as $url){
-            $urlStatus[$url][] = false;
-
-            var_dump($urlStatus);
-        }
+        /**
+         * Given a setting object with an array of urls
+         * Run at least on test for every url
+         * Retry until get !=100
+         */
 
         try {
-            $count = 0;
+            $logger = new Logger('wptGetTestData');
+            $tests = null;
 
-            for ($i=0; $i<5; $i++){
+            $urlsInQueue = $this->settings->getWptUrl();
 
-                foreach ($this->settings->wptUrl as $url){
+            foreach ($urlsInQueue as $item) {
 
-                    if($urlStatus[$url][false]){
-                        $response = $this->wptSendRequest();
-                        printf('is false');
+                //Instantiate a new item objects
+                $tests[] = new SpeedPerformanceItem($this->settings, $item);
+            }
 
-                        if($this->checkResponseStatus($response)[0] == 200){
-                            $this->$urlStatus[$url][true];
-                            printf('became true');
-                            var_dump($urlStatus);
-                            $count ++;
-                        }
-                    }
-                }
+            while (count($urlsInQueue) > 0){
 
-                if($count == count($this->settings->wptUrl)){
-                    break;
+                if(count($urlsInQueue) <= 10){
+                    $waitTime = 20/count($urlsInQueue);
                 } else {
-                    printf('waiting 1s');
-                    usleep(1000000);
+                    $waitTime = 1;
                 }
+
+                foreach ($tests as $test) {
+
+                    //Run the test over the targeted url
+                    $result = $test->wptGetTest();
+
+                    //check if the code returned is 100, 200 and manage the errors
+                    if ($this->checkResponseStatus($test) == 200){
+
+                        $test->testResultData = $result;
+                        unset($tests[$test]);
+
+                    } elseif($this->checkResponseStatus($test) != 100) {
+                        throw new Exception('Error in getting the status code from the server response: ' . $result['statusCode']);
+                    }
+
+                    sleep($waitTime);
+                }
+
+                //add the response object to an array of objects ready to be returned
             }
         } catch (Exception $e){
             $logger->pushHandler(new StreamHandler(__DIR__.'/speedPerformance.log', Logger::ERROR));
             $logger->addError($e->getMessage() . " on file: " . $e->getFile() . " and line: " . $e->getLine());
         };
 
-        return $response;
+        return $result;
     }
 }

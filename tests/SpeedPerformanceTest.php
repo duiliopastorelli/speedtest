@@ -69,34 +69,19 @@ class SpeedPerformanceTest extends PHPUnit_Framework_TestCase
 
 
     /**
-     * test
+     * @test
      */
     public function wptQueueManagementWorksProperly(){
         /**
          * Given a setting object with an array of urls
-         * Run at least on test for every url
-         * Retry until get !=100
+         * Return an array of objects with a complete test for each url
+         *
+         * Note: this test requires a working internet connection and a working config file (for the key)
          */
 
-        $wptRequest = new SpeedPerformance\SpeedPerformance();
-        $wptRequest->wptQueueManagement();
-    }
+        $wptRequest = new SpeedPerformance\SpeedPerformance('test');
+        $test = $wptRequest->wptQueueManagement();
 
-
-    /**
-     * test
-     */
-    public function getWptTestDataWorksProperly(){
-        /**
-         * Given an test result url
-         * retrieve the JSON and check --> statusText: "Test Complete"
-         * if false wait and retrieve the JSON again for max 10 times.
-         */
-
-        $wptConfig = new SpeedPerformance\Settings();
-        $wptConfig->getSettings('./config.json');
-        $wptData = new SpeedPerformance\SpeedPerformance();
-        $request = $wptData->wptSendRequest();
-        $this->assertInternalType('array',$wptData->getWptTestData($request));
+        $this->assertInternalType('Array',$test);
     }
 }

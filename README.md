@@ -40,7 +40,7 @@ $appStatus is optional and can have the following values:
 
 ## Test suite
 
-For run a test use the command
+For run the tests use the command
 
 ```vendor/bin/phpunit tests/[FILENAME]```
 

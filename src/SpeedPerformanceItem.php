@@ -13,6 +13,8 @@ use Monolog\Handler\StreamHandler;
 class SpeedPerformanceItem
 {
     private $url = null;
+    public $status = null;
+    public $testResultData = null;
 
 
     /**
@@ -35,28 +37,29 @@ class SpeedPerformanceItem
      * This function request the test and return the response from the WPT server as a JSON object.
      */
     public function wptGetTest(){
-        $logger = new Logger('wptRequest');
-        $wptRequestJson = null;
-
-        $data = array(
-            'k'         => $this->settings->getWptKey(),
-            'private'   => 1,
-            'f'         => $this->format,
-            'notify'    => $this->settings->getWptEmail(),
-            'url'       => $this->url
-        );
-
-        $options = array(
-            'http' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($data)
-            )
-        );
-
-        $context  = stream_context_create($options);
 
         try {
+            $logger = new Logger('wptRequest');
+            $wptRequestJson = null;
+
+            $data = array(
+                'k'         => $this->settings->getWptKey(),
+                'private'   => 1,
+                'f'         => $this->format,
+                'notify'    => $this->settings->getWptEmail(),
+                'url'       => $this->url
+            );
+
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data)
+                )
+            );
+
+            $context  = stream_context_create($options);
+
             $response = file_get_contents('http://www.webpagetest.org/runtest.php', false, $context);
             $wptRequestJson = json_decode($response, true);
 
