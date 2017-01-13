@@ -10,6 +10,12 @@ Webpage speed test runner
 
 # Develop
 
+Run:
+
+```$ DEBUG=myapp:* npm start```
+
+And go to "http://127.0.0.1:3000/"
+
 ## Test suite
 
 ```$ npm test```
