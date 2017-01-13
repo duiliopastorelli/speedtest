@@ -3,12 +3,16 @@ Webpage speed test runner
 
 # Install
 
+```$ npm install```
+
 ###Optional values for WPT
 - "email": "string"
 
 # Develop
 
 ## Test suite
+
+```$ npm test```
 
 # Data
 ##WebPageTest

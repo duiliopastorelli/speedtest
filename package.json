@@ -1,0 +1,30 @@
+{
+  "name": "speedtest",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Website speed test management app.",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duiliopastorelli/speedtest.git"
+  },
+  "author": "Danilo Mezgec",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/duiliopastorelli/speedtest/issues"
+  },
+  "homepage": "https://github.com/duiliopastorelli/speedtest#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "body-parser": "~1.15.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "jade": "~1.11.0",
+    "morgan": "~1.7.0",
+    "serve-favicon": "~2.3.0"
+  }
+}
