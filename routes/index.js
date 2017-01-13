@@ -7,4 +7,8 @@ router.get('/', function(req, res, next) {
     res.sendfile('views/index.jade');
 });
 
+router.get('/users', function(req, res, next) {
+    res.sendfile('views/users.html');
+});
+
 module.exports = router;
