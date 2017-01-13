@@ -1,5 +1,0 @@
-[2017-01-02 11:47:43] settings.ERROR: The key for Web Page Test must be configured and be a string! It is: integer on file: /Users/danilomezgec/workspace/speedtest/src/Settings.php and line: 74 [] []
-[2017-01-02 11:47:51] settings.ERROR: The key for Web Page Test must be configured and be a string! It is: integer on file: /Users/danilomezgec/workspace/speedtest/src/Settings.php and line: 74 [] []
-[2017-01-02 13:43:16] settings.ERROR: The key for Web Page Test must be configured and be a string! It is: integer on file: /Users/danilomezgec/workspace/speedtest/src/Settings.php and line: 74 [] []
-[2017-01-02 15:09:06] settings.ERROR: The key for Web Page Test must be configured and be a string! It is: integer on file: /Users/danilomezgec/workspace/speedtest/src/Settings.php and line: 74 [] []
-[2017-01-02 15:09:06] wptRequest.ERROR: Error in the api consumption, the server didn't respond with a 200 but with: 400 on file: /Users/danilomezgec/workspace/speedtest/src/SpeedPerformanceitem.php and line: 69 [] []
